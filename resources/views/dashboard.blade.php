@@ -3,35 +3,17 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    {{-- Dummy stats (directly in Blade as requested) --}}
-    @php
-        $stats = [
-            ['label' => 'Total Players',  'value' => '1,250', 'color' => 'from-rose-400 to-rose-600', 'icon' => '🎮'],
-            ['label' => 'Active Players', 'value' => '940',   'color' => 'from-emerald-400 to-emerald-600', 'icon' => '✅'],
-            ['label' => 'Inactive Players','value' => '310',   'color' => 'from-yellow-400 to-yellow-500', 'icon' => '⏸️'],
-            ['label' => 'Revenue',        'value' => '$42,500','color' => 'from-indigo-400 to-indigo-600', 'icon' => '💰'],
-        ];
-
-        $players = [
-            ['id' => 1, 'name' => 'Alex Morgan',    'team' => 'Lions',   'status' => 'Active',   'joined' => '2022-01-08'],
-            ['id' => 2, 'name' => 'Sam Carter',     'team' => 'Wolves',  'status' => 'Active',   'joined' => '2021-09-12'],
-            ['id' => 3, 'name' => 'Jamie Lee',      'team' => 'Hawks',   'status' => 'Inactive', 'joined' => '2020-07-24'],
-            ['id' => 4, 'name' => 'Casey Nguyen',   'team' => 'Tigers',  'status' => 'Active',   'joined' => '2023-03-02'],
-            ['id' => 5, 'name' => 'Riley Parker',   'team' => 'Bulls',   'status' => 'Active',   'joined' => '2019-11-30'],
-        ];
-    @endphp
-
     {{-- Statistic cards --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         @foreach ($stats as $s)
-            <div class="rounded-lg shadow p-4 bg-white overflow-hidden relative group">
+            <div class="rounded-lg shadow p-4 bg-white overflow-hidden relative group hover:shadow-lg transition-shadow">
                 <div class="flex items-start justify-between">
                     <div>
                         <div class="text-sm text-gray-500">{{ $s['label'] }}</div>
                         <div class="text-2xl font-bold text-gray-800 mt-1">{{ $s['value'] }}</div>
                     </div>
 
-                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br {{ $s['color'] }} text-white text-xl shadow-lg">
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full {{ $s['bg'] }} text-white text-xl shadow-lg">
                         <span>{{ $s['icon'] }}</span>
                     </div>
                 </div>

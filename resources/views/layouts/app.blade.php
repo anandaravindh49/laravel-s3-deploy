@@ -1,37 +1,27 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ config('app.name', 'MyApp') }} - @yield('title', 'Dashboard')</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ config('app.name', 'Dashboard') }} - @yield('title')</title>
 
-    {{-- Use Vite-built assets when available; otherwise fallback minimal CSS so layout looks OK --}}
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
-        <style>
-            /* Minimal fallback styles (keeps things readable without a built Tailwind) */
-            :root{--sidebar-bg:#0f172a;--muted:#6b7280;--card:#ffffff}
-            *{box-sizing:border-box}
-            body{font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial; margin:0; background:#f8fafc; color:#0f172a}
-            a{text-decoration:none}
-            .flex{display:flex}.items-center{align-items:center}.justify-between{justify-content:space-between}.justify-center{justify-content:center}
-            .min-h-screen{min-height:100vh}.overflow-auto{overflow:auto}
-            .p-4{padding:1rem}.p-6{padding:1.5rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}
-            .rounded{border-radius:.5rem}.rounded-md{border-radius:.375rem}
-            .shadow{box-shadow:0 6px 18px rgba(15,23,42,0.06)}
-            .text-sm{font-size:.875rem}.text-xs{font-size:.75rem}.text-lg{font-size:1.125rem}.text-xl{font-size:1.25rem}
-            .w-64{width:16rem}.h-12{height:3rem}
-            .bg-white{background:#fff}.bg-indigo-600{background:#4f46e5}.text-white{color:#fff}
-            .border{border:1px solid rgba(15,23,42,0.06)}.rounded-full{border-radius:9999px}
-            .table{display:table;width:100%}
-            .text-muted{color:var(--muted)}
-            .hover-light:hover{background:#f1f5f9}
-            .cursor-pointer{cursor:pointer}
-        </style>
+        <script src="https://cdn.tailwindcss.com"></script>
     @endif
 
-    @stack('head')
+    <style>
+        :root { --sidebar-width: 280px; }
+        .sidebar { width: var(--sidebar-width); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .smooth-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .nav-link { @apply flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors; }
+        .nav-link.active { @apply bg-blue-50 text-blue-600 font-medium; }
+        .stat-card { @apply bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow; }
+    </style>
+
+    @stack('styles')
 </head>
 <body class="min-h-screen">
     <div class="flex">
