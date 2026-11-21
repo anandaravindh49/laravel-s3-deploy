@@ -1,59 +1,141 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Visitor Management System (Laravel)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based Visitor Management System (VMS) for managing visitor requests, approval workflows, gate check-in/check-out, device synchronization, and audit history.
 
-## About Laravel
+> **Repository note:** This repository is currently named `laravel-s3-deploy`, but the inspected application code and documentation describe a Visitor Management System. The repository name is historical and does not describe the main application purpose.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Project overview
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+The application is organized around these workflows:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Visitor requests:** accept public visitor requests and track their status.
+- **Approval workflow:** approve, reject, or revoke visitor access.
+- **Gate operations:** record visitor check-in and check-out events.
+- **Device management:** manage devices and process device logs / synchronization jobs.
+- **Audit trail:** record important approval and gate actions for later review.
+- **Background processing:** use Laravel jobs, events, and listeners for asynchronous work.
 
-## Learning Laravel
+## Technology stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- PHP `^8.2`
+- Laravel `^12.0`
+- Livewire `^3.6`
+- AWS SDK for PHP and Flysystem S3 adapter (dependencies are present in Composer)
+- Laravel queues, events, listeners, scheduler, and Eloquent ORM
+- PHPUnit/Pest-related test dependencies
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+The repository includes dedicated VMS documentation files covering the API, architecture, quick start, implementation summary, and project file index.
 
-## Laravel Sponsors
+## Architecture at a glance
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```text
+Visitor / Admin
+      |
+      v
+Laravel Web UI and API
+      |
+      +--> Visitor request workflow
+      |
+      +--> Approval / rejection / revocation
+      |
+      +--> Gate check-in / check-out
+      |
+      +--> Device management and synchronization
+      |
+      +--> Audit logging
+      |
+      v
+Database + Laravel Queue / Scheduler
+```
 
-### Premium Partners
+Relevant application areas include:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- `app/Http/Controllers/Api/` — API controllers
+- `app/Services/` — approval, audit, device sync, gate, and request services
+- `app/Jobs/` — background processing
+- `app/Events/` and `app/Listeners/` — event-driven audit and workflow handling
+- `app/Models/` — Eloquent models
+- `database/migrations/` — database schema
 
-## Contributing
+## Local development setup
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Prerequisites
 
-## Code of Conduct
+- PHP 8.2 or later
+- Composer
+- Node.js and npm
+- A database supported by the configured Laravel connection
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Install
 
-## Security Vulnerabilities
+```bash
+git clone https://github.com/anandaravindh49/laravel-s3-deploy.git
+cd laravel-s3-deploy
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+composer install
+cp .env.example .env
+php artisan key:generate
+```
 
-## License
+Configure the database and other required values in `.env`. Do not commit the real `.env` file or credentials.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Then run:
+
+```bash
+php artisan migrate
+npm install
+npm run build
+php artisan serve
+```
+
+In a separate terminal, start the queue worker if you are testing queued workflows:
+
+```bash
+php artisan queue:work
+```
+
+For scheduled tasks, configure Laravel's scheduler according to the deployment environment and inspect the registered tasks with:
+
+```bash
+php artisan schedule:list
+```
+
+## Documentation
+
+| File | Description |
+| --- | --- |
+| [VMS_QUICK_START_GUIDE.md](VMS_QUICK_START_GUIDE.md) | Setup and example API usage |
+| [VMS_API_DOCUMENTATION.md](VMS_API_DOCUMENTATION.md) | API endpoint reference |
+| [VMS_COMPLETE_DOCUMENTATION.md](VMS_COMPLETE_DOCUMENTATION.md) | Application components and design |
+| [VMS_ARCHITECTURE_DIAGRAM.md](VMS_ARCHITECTURE_DIAGRAM.md) | Architecture and workflow diagrams |
+| [VMS_IMPLEMENTATION_SUMMARY.md](VMS_IMPLEMENTATION_SUMMARY.md) | Implementation notes |
+| [README_VMS.md](README_VMS.md) | VMS feature overview |
+
+## Security notes
+
+- Use unique, strong credentials for every environment.
+- Keep `.env`, access tokens, AWS keys, database passwords, and real visitor information out of Git.
+- Set `APP_DEBUG=false` in production.
+- Do not use sample or seeded credentials on an internet-accessible deployment.
+- Review access control, validation, file uploads, queue configuration, and device connectivity before production use.
+- Enable GitHub secret scanning, push protection, and dependency alerts where available.
+
+## Testing
+
+Run the Laravel test suite with:
+
+```bash
+php artisan test
+```
+
+Add or update tests when changing request approval, access revocation, device synchronization, gate operations, or audit behavior.
+
+## Project status
+
+This README documents the code and supporting documentation currently present in the repository. It does not claim that the application is deployed, production-certified, or connected to live hardware. Verify those details in the target environment before describing them as delivered outcomes.
+
+## Maintainer
+
+**Aravindh Anand**  
+GitHub: [@anandaravindh49](https://github.com/anandaravindh49)  
+LinkedIn: [Aravindh Anand](https://www.linkedin.com/in/aravindh-anand-002278236/)
